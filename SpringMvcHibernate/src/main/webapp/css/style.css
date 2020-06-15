@@ -1,0 +1,138 @@
+@charset "ISO-8859-1";
+
+.navbar {
+	background: rgb(0, 0, 0, 0.3);
+	/* background-color : transparent; */
+}
+
+/* .navbar-brand span {
+	font-family: Damion;
+	font-size: 35px;
+	opacity: 1;
+	letter-spacing: 0;
+	color: white;
+} */
+.primary-background {
+	background: #2196f3;
+}
+
+.btn-width {
+	width: 25%;
+}
+
+.banner-background {
+	/* clip-path: polygon(50% 0%, 100% 0, 100% 100%, 48% 83%, 0 100%, 0 0); */
+	/* clip-path: polygon(50% 0%, 100% 0, 100% 35%, 100% 100%, 80% 90%, 50% 100%, 20% 90%, 2% 100%, 0% 35%, 0 0); */
+	clip-path: polygon(50% 0%, 100% 0, 100% 75%, 50% 100%, 0% 75%, 0 0);
+}
+
+.login-height {
+	height: 90vh;
+}
+
+.login-bg {
+	background: #00e676;
+}
+
+.login-btn-width {
+	width: 100%;
+}
+
+.reg-top {
+	margin-top: 35%;
+	width: 170%;
+	margin-bottom: 35%;
+}
+
+.check {
+	/* width: 100%; */
+	padding: 15px;
+	/* margin:5px 10px 22px 25px; */
+	border: 2px solid #eee;
+	border-radius: 5px;
+}
+
+div .space {
+	display: inline;
+	margin: 0 10px;
+}
+
+span.error {
+	color: red;
+	font-weight: bold;
+	text-align: center;
+	margin: 0 0 10px 0;
+}
+
+img#preview {
+	max-width: 150px !important;
+	border-radius: 100px !important;
+	margin-top: -10%;
+}
+
+.image_outer_container {
+	margin-top: auto;
+	margin-bottom: auto;
+	border-radius: 50%;
+	position: relative;
+}
+
+.image_inner_container {
+	border-radius: 50%;
+	padding: 5px;
+	background: #833ab4;
+	background: -webkit-linear-gradient(to bottom, #fcb045, #fd1d1d, #833ab4);
+	background: linear-gradient(to bottom, #fcb045, #fd1d1d, #833ab4);
+}
+
+.image_inner_container img {
+	height: 200px;
+	width: 200px;
+	border-radius: 50%;
+	border: 5px solid white;
+}
+
+.image_outer_container .green_icon {
+	background-color: #4cd137;
+	position: absolute;
+	right: 30px;
+	bottom: 10px;
+	height: 30px;
+	width: 30px;
+	border: 5px solid white;
+	border-radius: 50%;
+}
+
+.admin-card-header {
+	border: none;
+	background: none;
+}
+
+.admin_image_outer_container {
+	margin-top: auto;
+	margin-bottom: auto;
+	border-radius: 50%;
+	position: relative;
+}
+
+.admin_image_inner_container {
+	border-radius: 50%;
+	padding: 4px;
+	background: #833ab4;
+	background: rgb(2, 0, 36);
+	background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%,
+		rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+}
+
+.admin_image_inner_container img {
+	height: 80px;
+	width: 80px;
+	border-radius: 50%;
+	border: 4px solid white;
+}
+
+table.dataTable thead .sorting, 
+table.dataTable thead .sorting_asc, 
+table.dataTable thead .sorting_desc {
+    background : none;
+}
