@@ -21,5 +21,9 @@ public interface UserDao extends GenericDao<UserModel>{
 
 	public List<UserModel> getAllUserData();
 
+	public boolean registerCheck(String email);
+
+	public boolean emailExist(int userId, String email);
+
 	
 }

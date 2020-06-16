@@ -120,4 +120,33 @@ public class UserDaoImpl extends GenericDaoImpl<UserModel> implements UserDao {
 		return result;
 
 	}
+
+	public boolean registerCheck(String email) {
+		// TODO Auto-generated method stub
+		String hql = "select email FROM UserModel  WHERE email = :email";
+		Query query =  getSession().createQuery(hql);
+		query.setParameter("email",email);
+		 String result =  (String) query.uniqueResult(); 
+		 if(result == null) {
+			 return false;
+		 }
+		 else {
+			 return true;
+		 }
+	}
+
+	public boolean emailExist(int userId, String email) {
+		// TODO Auto-generated method stub
+		String hql = "select id FROM UserModel  WHERE email = :email";
+		Query query =  getSession().createQuery(hql);
+		query.setParameter("email",email);
+		 Integer result =   (Integer) query.uniqueResult(); 
+		 
+		 if(result == userId) {
+			 return false;
+		 }
+		 else {
+			 return true;
+		 }
+	}
 }

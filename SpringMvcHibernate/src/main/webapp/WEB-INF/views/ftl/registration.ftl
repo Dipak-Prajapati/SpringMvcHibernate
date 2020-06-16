@@ -1,7 +1,7 @@
 	<!-- Header -->
 	<#include "header.ftl"> 
 	
-	
+<#assign session = (Session.login)!""/>	
 	<main class="d-flex primary-background">
 	<div class="container">
 		<div class="row">
@@ -10,7 +10,7 @@
 					<div class="card-header login-bg text-white text-center">
 						<br> <span class="fa fa-user-plus fa-3x"></span><br>
 						<p>
-						<#if userModel??>
+						<#if session?has_content>
 							Update User Profile
 						<#else>
 							Registration Here
@@ -18,8 +18,8 @@
 						</p>
 					</div>
 					<div class="card-body">
-
-						<form name="reg" id="reg" method="post" action="<#if userModel??>update<#else>save</#if>" enctype="multipart/form-data">
+					
+						<form name="reg" id="reg" method="post" action="<#if session?has_content>update<#else>save</#if>" enctype="multipart/form-data" onsubmit="return validate()">
 							
 							<span class="error" id="shead"></span>
 
@@ -30,6 +30,7 @@
 									placeholder="Enter Your First Name" onblur="inputfname()"
 									onfocus="resetFirstName()"><br> <span
 									class="error" id="sfname"></span>
+									<span class="error"><#if (error.getFieldError("fname"))??> ${(error.getFieldError("fname").defaultMessage)} </#if></span>
 							</div>
 
 							<div class="form-group">
@@ -39,6 +40,7 @@
 									placeholder="Enter Your Last Name" onblur="inputlname()"
 									onfocus="resetLastName()"><br> <span class="error"
 									id="slname"></span>
+									<span class="error"><#if (error.getFieldError("lname"))??> ${(error.getFieldError("lname").defaultMessage)} </#if></span>									
 							</div>
 
 							<div class="form-group">
@@ -46,8 +48,11 @@
 									class="form-control" name="email" id="email"
 									value="${(userModel.email) !""}"
 									placeholder="Enter Your Email" onblur="inputemail()"
-									onfocus="resetEmail()"><br> <span class="error"
+									onfocus="resetEmail()"><br>
+									<span id="emailExistOrNot" class="error"></span>
+									  <span class="error"
 									id="semail"></span>
+									<span class="error"><#if (error.getFieldError("email"))??> ${(error.getFieldError("email").defaultMessage)} </#if></span>								
 							</div>
 							<div class="form-group">
 								<label for="dob">Date Of Birth : </label> <input type="date"
@@ -55,6 +60,7 @@
 									onfocus="resetDob()"
 									value="${(userModel.dob) !""}">
 								<br> <span class="error" id="sdob"></span>
+								<span class="error"><#if (error.getFieldError("dob"))??> ${(error.getFieldError("dob").defaultMessage)} </#if></span>
 							</div>
 
 							<div class="form-group">
@@ -64,6 +70,7 @@
 									placeholder="Enter Your Mobile Number" onblur="inputmno()"
 									onfocus="resetMno()"><br> <span class="error"
 									id="sm_no"></span>
+									<span class="error"><#if (error.getFieldError("m_no"))??> ${(error.getFieldError("m_no").defaultMessage)} </#if></span>
 							</div>
 
 							<#assign gender = (userModel.gender)!"">
@@ -84,6 +91,7 @@
 									</div>
 								</div>
 								<br> <span class="error" id="sgender"></span>
+									<span class="error"><#if (error.getFieldError("gender"))??> ${(error.getFieldError("gender").defaultMessage)} </#if></span>
 							</div>
 
 							<#assign language = (userModel.language)!"">
@@ -114,6 +122,7 @@
 									</div>
 								</div>
 								<br> <span class="error" id="scheck"></span>
+									<span class="error"><#if (error.getFieldError("language"))??> ${(error.getFieldError("language").defaultMessage)} </#if></span>								
 							</div>
 
 							<#assign hobbie = (userModel.hobbie) !"">
@@ -130,13 +139,13 @@
 										<option value="Hollywood" <#if hobbie == "Hollywood">selected</#if>>Hollywood</option>
 									</optgroup>
 								</select><br> <span class="error" id="shobbie"></span>
+									<span class="error"><#if (error.getFieldError("hobbie"))??> ${(error.getFieldError("hobbie").defaultMessage)} </#if></span>
 							</div>
 
 
-					<#if userModel?has_content>
-					
+			 	<#if userModel?has_content>
 						<div id="example1" class="form-group">	
-						<#-- add button -->
+						
 						<div id="repeater" class="text-center">
 								<button type="button" id="rbtn" class="btn btn-success list-add"> 
 									<span class="fa fa-plus-circle" style="font-size: 30px;"></span>
@@ -144,6 +153,7 @@
 						</div>
 						
 						<#assign count=1>
+						<#assign index=0>
 						<#list userModel.addressModel as addressData>											
 							<div class="list-item">
 								<div class="form-group" id="addressrow">
@@ -152,26 +162,29 @@
 										class="form-control" placeholder="Address" value="${addressData.address}"
 										 onblur="streetValidate(id)" required/>
 										<br/> 
-										 
+										<span class="error"><#if (addError.getFieldError("addressmodel["+index+"].address"))??> ${(error.getFieldError("addressmodel["+index+"].address").defaultMessage)} </#if></span>
 								<div class="row">
 									<div class="col-md-6">
 										<label for="text-input" class="col-form-label text-md-left">City${count}</label> 
 											<input type="text" id="${addressData?index}.city" class="form-control"
 											name="addressmodel[${addressData?index}].city" placeholder="city" value="${addressData.city}" required/><br> 
+																			<span class="error"><#if (addError.getFieldError("addressmodel["+index+"].city"))??> ${(error.getFieldError("addressmodel["+index+"].city").defaultMessage)} </#if></span>
 									</div>
 									<div class="col-md-6">
 										<label for="text-input" class="col-form-label text-md-left">State${count}</label> 
 										<input type="text" id="${addressData?index}.state" class="form-control"
 											name="addressmodel[${addressData?index}].state" value="${addressData.state}" placeholder="state" required/> <br>
+																			<span class="error"><#if (addError.getFieldError("addressmodel["+index+"].state"))??> ${(error.getFieldError("addressmodel["+index+"].state").defaultMessage)} </#if></span>
 									</div>
 								</div>
 								
 								<label for="text-input" class="col-form-label text-md-left">Country${count}</label> 
 								<br/><input type="text" id="${addressData?index}.country" class="form-control"
 								name="addressmodel[${addressData?index}].country" value="${addressData.country}" placeholder="country" required/> <br>
-							
+								<span class="error"><#if (addError.getFieldError("addressmodel["+index+"].country"))??> ${(error.getFieldError("addressmodel["+index+"].country").defaultMessage)} </#if></span>							
+								
 								<input type="hidden" name="addressmodel[${addressData?index}].id" value="${addressData.id!""}"> 
-							<#-- Remove Button -->
+						
 							<div class="text-center" id="repeater">
 								<button type="button" class="btn btn-danger list-remove"
 									id="fstaddress">
@@ -181,57 +194,68 @@
 						</div>																
 						<hr>
 						</div>
+						<#assign index++>
 						<#assign count++>
 						</#list>
 					</div>
 					
 					
-					<#else>
+					<#else>  
+			
 					<div id="example1" class="form-group">	
 						<#-- add button -->
+						<#assign count_Validate=0>
 						<div id="repeater" class="text-center">
 								<button type="button" id="rbtn" class="btn btn-success list-add"> 
 									<span class="fa fa-plus-circle" style="font-size: 30px;"></span>
 								</button>
 						</div>
-					
+								
 							<div class="list-item">
 								<div class="form-group" id="addressrow">
 									<label class="col-form-label text-md-left" for="text-input">Address</label>
 										<input type="text"  name="addressmodel[0].address" id= "0.address"
 										class="form-control" placeholder="Address" 
-										 onblur="streetValidate(id)" required/>
+										 onblur="inputaddress(${count_Validate})" onfocus="resetAddress(${count_Validate})" required/>
 										<br/> 
+										<span class="error" id="saddress${count_Validate}"></span>
+							<#-- 		<span class="error"><#if (addError.getFieldError("addressmodel["+index+"].address"))??> ${(error.getFieldError("addressmodel["+index+"].address").defaultMessage)} </#if></span>  -->
 										 
 								<div class="row">
 									<div class="col-md-6">
 										<label for="text-input" class="col-form-label text-md-left">City :</label> 
 											<input type="text" id="0.city" class="form-control"
-											name="addressmodel[0].city" placeholder="city" value="" required/><br> 
+											name="addressmodel[0].city" placeholder="city" onblur="inputcity(${count_Validate})" onfocus="resetCity(${count_Validate})" required/><br> 
+										<span class="error" id="scity${count_Validate}"></span>
 									</div>
+							<#-- 		<span class="error"><#if (addError.getFieldError("addressmodel["+index+"].city"))??> ${(error.getFieldError("addressmodel["+index+"].city").defaultMessage)} </#if></span>  -->
+
 									<div class="col-md-6">
 										<label for="text-input" class="col-form-label text-md-left">State :</label> 
 										<input type="text" id="0.state" class="form-control"
-											name="addressmodel[0].state" value="" placeholder="state" required/> <br>
+											name="addressmodel[0].state" value="" placeholder="state" onblur="inputstate(${count_Validate})" onfocus="resetState(${count_Validate})" required/> <br>
+										<span class="error" id="sstate${count_Validate}"></span>
 									</div>
 								</div>
 								
 								<label for="text-input" class="col-form-label text-md-left">Country :</label> 
 								<br/><input type="text" id="0.country" class="form-control"
-								name="addressmodel[0].country" value="" placeholder="country" required/> <br>
-							
+								name="addressmodel[0].country" value="" placeholder="country" onblur="inputcountry(${count_Validate})" onfocus="resetCountry(${count_Validate})" required/> <br>
+								<span class="error" id="scountry${count_Validate}"></span>
 							<#-- Remove Button -->
 							<div class="text-center" id="repeater">
 								<button type="button" class="btn btn-danger list-remove"
 									id="fstaddress">
 									<span class="fa fa-minus-circle" style="font-size: 30px;"></span>
 								</button>
+								<#assign count_Validate-->
 							</div>
 						</div>																
 						<hr>
 						</div>
+						<#assign count_Validate++>
 					</div>
-					</#if>
+					</#if>  
 
 
 
@@ -244,6 +268,7 @@
 									value="${(userModel.pwd) !""}" placeholder="Enter Password" onblur="inputpassword()"
 									onfocus="resetPassword()"><br> <span class="error"
 									id="spwd"></span>
+									<span class="error"><#if (error.getFieldError("pwd"))??> ${(error.getFieldError("pwd").defaultMessage)} </#if></span>									
 							</div>
 
 							<div class="form-group">
@@ -267,13 +292,16 @@
 								</div>
 								<span class="error" id="spic"></span>
 							</div>
-							<input type="hidden"  name="id" value="${(userModel.id)!""}">
+							
+							<#if userModel?has_content>
+							<input type="hidden" name="id" id="userId" value="${(userModel.id)!""}">
+							</#if>
 							<button type="submit" name="register" id="register"
 								value=""
-								class="btn btn-outline-light btn-lg login-btn-width login-bg" onclick='return validate();'><#if userModel??>Update<#else>SignUp</#if>
+								class="btn btn-outline-light btn-lg login-btn-width login-bg" onclick='return validate();'><#if session?has_content>Update<#else>SignUp</#if>
 							</button>
 							
-							<#if userModel?has_content>							
+							<#if session?has_content>							
 							<a class="btn btn-outline-light btn-lg login-btn-width login-bg"
 									href="cancle"><span class="fa fa-times-circle mr-1"></span>Cancel</a>
 							</#if>

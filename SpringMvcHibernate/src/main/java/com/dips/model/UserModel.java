@@ -14,6 +14,10 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "user")
@@ -23,16 +27,48 @@ public class UserModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private int id;
+	
+	@NotEmpty()
+	@Pattern(regexp = "^[a-zA-Z]+$",message = "* For Your First Name Can't be null and Please Use Alphabets Only *")
+	@Column(nullable = false)
 	private String fname;
-	private String lname;
-	private String email;
-	private String dob;
-	private String m_no;
-	private String gender;
-	private String language;
-	private String hobbie;
-	private String pwd;
 
+	@NotEmpty()
+	@Pattern(regexp = "^[a-zA-Z]+$",message = "* For Your Last Name Can't be null and Please Use Alphabets Only *")
+	@Column(nullable = false)
+	private String lname;
+	
+	@NotEmpty
+	@Email(message = "* Please Enter a Valid Email Address *")
+	@Column(nullable = false)
+	private String email;
+	
+	@NotEmpty(message = "* Enter The Date Of Birth *")
+	@Column(nullable = false)
+	private String dob;
+	
+	@NotEmpty(message = "* Please Enter The Mobile Number *")
+	@Pattern(regexp = "^[0-9]{10,10}$",message = "* Please Enter The Valid Mobile Number *")
+	@Column(nullable = false)
+	private String m_no;
+	
+	@NotEmpty(message = "* You Must Select Your Gender *")
+	@Column(nullable = false)
+	private String gender;
+	
+	@NotEmpty(message = "* Please Select Atleast One Language *")
+	@Column(nullable = false)
+	private String language;
+	
+	@NotEmpty(message = "* Please select an option! *")
+	@Column(nullable = false)
+	private String hobbie;
+	
+	@NotEmpty()
+	@Pattern(regexp = "^[a-zA-Z0-9]{8,16}$",message = "* Password Can't be null and Enter minimum 8 character and maximum 16 character *")
+	@Column(nullable = false)
+	private String pwd;
+	
 	@Lob
 	private byte[] pic;
 	

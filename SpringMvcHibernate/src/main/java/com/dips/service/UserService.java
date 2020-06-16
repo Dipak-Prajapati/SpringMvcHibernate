@@ -16,4 +16,6 @@ public interface UserService extends GenericService<UserModel>{
 
 	public List<UserModel> getAllUserData();
 
+	public boolean emailExist(int userId, String email);
+
 }

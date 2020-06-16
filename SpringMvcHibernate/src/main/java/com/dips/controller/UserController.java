@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,18 +44,21 @@ public class UserController {
 		return "login";
 	}
 
-	// private List<AddressModel> addressModel;
 	@PostMapping("/save")
-	public String registrationForm(UserModel userModel, BindingResult result,
-			@RequestParam("pic") CommonsMultipartFile file, Model m, AddressListDto addressListDto) {
-		// ,AddressModel addressmodel,BindingResult result2
-		// UserModel userModel = new UserModel();
-		// addressModel = addressmodel;
-		System.out.println("addressmodel :" + addressListDto);
-		userModel.setAddressModel(addressListDto.getAddressmodel());
+	public String registrationForm(@Valid UserModel userModel, BindingResult result,
+			@RequestParam("pic") CommonsMultipartFile file, Model m,@Valid AddressListDto addressListDto , BindingResult add_result) {
 
-		m.addAttribute("userModel", userModel);
-		System.out.println("Data is in controller :" + userModel);
+		userModel.setAddressModel(addressListDto.getAddressmodel());
+		
+		if(result.hasErrors() || add_result.hasErrors())
+		{
+			m.addAttribute("error",result);
+			m.addAttribute("addError",add_result);
+			m.addAttribute("userModel", userModel);
+			return "registration";
+		}
+
+		/* m.addAttribute("userModel", userModel); */
 		userModel.setPic(file.getBytes());
 		userService.addUser(userModel);
 		return "index";
@@ -82,7 +86,7 @@ public class UserController {
 			mav = new ModelAndView("adminProfile");
 			mav.addObject("userModel", list);
 			session.setAttribute("loginUser", "adminuser");
-			session.setAttribute("loginadmin", list);
+			session.setAttribute("login", list);
 			return mav;
 		} else {
 			userModel = userService.showData(userModel.getEmail(), userModel.getPwd());
@@ -121,33 +125,35 @@ public class UserController {
 			m.addAttribute("userModel", session.getAttribute("login"));
 			return "profile";
 		} else {
-			m.addAttribute("userModel", session.getAttribute("loginadmin"));
+			m.addAttribute("userModel", session.getAttribute("login"));
 			return "adminProfile";
 		}
 	}
 
 	@PostMapping("/update")
-	public String updateForm(UserModel userModel, BindingResult result, @RequestParam("pic") CommonsMultipartFile file,
-			Model m, AddressListDto addressListDto, HttpSession session, int id, String base64image) {
+	public String updateForm(@Valid UserModel userModel, BindingResult result, @RequestParam("pic") CommonsMultipartFile file,
+			Model m,@Valid AddressListDto addressListDto,BindingResult add_result ,HttpSession session, int id, String base64image) {
+		
 		userModel.setAddressModel(addressListDto.getAddressmodel());
 
-		System.out.println("file is empty or not  :" + file.getSize());
+		if(result.hasErrors() || add_result.hasErrors())
+		{
+			m.addAttribute("error",result);
+			m.addAttribute("addError",add_result);
+			m.addAttribute("userModel", userModel);
+			return "registration";
+		}
+		
 		if (file.getSize() > 0) {
-			System.out.println("iffff");
 			userModel.setPic(file.getBytes());
 		} else {
-			System.out.println("elseeee");
-			// byte[] byteArray = Base64.decodeBase64(base64image);
 			byte[] decodedBytes = Base64.getDecoder().decode(base64image);
-			// String decodedString = new String(decodedBytes);
 			userModel.setPic(decodedBytes);
 		}
 
 		userService.updateUserData(userModel);
-		// m.addAttribute("userModel", userModel);
 		userModel = userService.getData((Integer) id);
 		m.addAttribute("userModel", userModel);
-		// m.addAttribute("userModel", session.getAttribute("login"));
 		if (session.getAttribute("loginUser").equals("user")) {
 			return "profile";
 		} else {
@@ -190,5 +196,16 @@ public class UserController {
 			message = "Please Enter Valid Email Id.....!!!!!";
 			return message;
 		}
+	}
+	
+	@RequestMapping(value="/emailexist",method = RequestMethod.POST)   
+	@ResponseBody
+	public String emailExist(@RequestParam("userId")int userId,@RequestParam("email")String email) {
+		boolean isEmailExist = userService.emailExist(userId,email);
+		if(isEmailExist == true) {
+			return "*This Email Id Already Exist Please fill another one*";
+		}else {
+			return null;
+		}  
 	}
 }

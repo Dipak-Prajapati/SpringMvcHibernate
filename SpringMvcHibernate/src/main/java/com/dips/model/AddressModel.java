@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "address")
@@ -16,10 +18,22 @@ public class AddressModel {
 	@Column(name = "address_id")
 	private int id;
 	
+	@NotEmpty(message = "* Please Enter The Address *")
+	@Column(nullable = false)
 	private String address;
+
+	@NotEmpty(message = "* Please Enter The City *")
+	@Column(nullable = false)
 	private String city;
+	
+	@NotEmpty(message = "* Please Enter The State *")
+	@Column(nullable = false)
 	private String state;
+	
+	@NotEmpty(message = "* Please Enter The Country *")
+	@Column(nullable = false)
 	private String country;
+	
 	public int getId() {
 		return id;
 	}

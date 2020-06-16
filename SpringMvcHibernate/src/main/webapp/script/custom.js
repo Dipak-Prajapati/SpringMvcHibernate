@@ -51,3 +51,34 @@ $("[id^=delete]").click(function() {
 		}
 	});
 });
+
+
+$("#email").blur(function() {
+	
+	
+	var userId = $("#userId").val();
+	var email = $(this).val();
+
+	if(email == "") {
+		return false;
+	}
+	else {
+	
+	if(userId == null){
+		userId = 0;
+	}
+
+	$.ajax({
+		type :"POST",
+		url : "emailexist",
+		data : {
+			email : $('#email').val() ,userId : userId
+		},
+		success : function(responseText) {
+			
+			$('#emailExistOrNot').text(responseText);
+		}
+	});
+	
+	}
+});

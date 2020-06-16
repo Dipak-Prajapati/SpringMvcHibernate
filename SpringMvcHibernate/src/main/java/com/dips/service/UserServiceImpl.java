@@ -67,4 +67,20 @@ public class UserServiceImpl extends GenericServiceImpl<UserModel> implements Us
 		return userDao.getAllUserData();
 	}
 
+	public boolean emailExist(int userId, String email) {
+		// TODO Auto-generated method stub
+		boolean ans;
+		if(userId == 0) {
+		 ans = userDao.registerCheck(email);
+		}
+		else {
+			 ans = userDao.emailExist(userId,email);
+		}
+		if(ans == true) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
 }

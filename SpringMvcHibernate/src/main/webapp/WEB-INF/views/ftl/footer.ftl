@@ -12,7 +12,7 @@
 <script src="script/jquery.min.js"></script>
 <script src="script/popper.min.js"></script>
 <script src="script/bootstrap.min.js"></script>
-<script src="script/jquery-1.12.4.min.js"></script>
+<#-- <script src="script/jquery-1.12.4.min.js"></script> -->
 
 <!-- Data Table -->
 <script src="script/jquery.dataTables.min.js"></script>
@@ -21,7 +21,7 @@
 <!-- End Of Data Table -->
 
 
-<script src="script/validation.js"></script>
+<script src="script/validation.js"></script>   
 <script src="script/imagePreview.js"></script>
 <script src="script/fontawesome.min.js"></script>
 <script src="script/jquery.dynamiclist.js"></script>
