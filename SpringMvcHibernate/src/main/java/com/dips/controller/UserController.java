@@ -27,7 +27,6 @@ import com.dips.model.UserModel;
 import com.dips.service.UserService;
 
 @Controller
-//@MultipartConfig
 public class UserController {
 
 	@Autowired
@@ -48,32 +47,20 @@ public class UserController {
 		return "login";
 	}
 
-	// @RequestMapping(value = { "/save" }, method = RequestMethod.POST, consumes =
-	// {"multipart/form-data"})
 	@PostMapping("/save")
 	public String registrationForm(@Valid UserModel userModel, BindingResult result,
 			@Valid AddressListDto addressListDto, BindingResult add_result,
-			@RequestParam("pic") CommonsMultipartFile pic, Model m) {
+			@RequestParam("image") CommonsMultipartFile image, Model m) {
 
-		System.out.println("file :" + pic + "file size" + pic.getSize());
 		userModel.setAddressModel(addressListDto.getAddressmodel());
-
-		System.out.println("pic.getBytes()" + pic.getBytes());
-		userModel.setPic(pic.getBytes());
+		userModel.setPic(image.getBytes());
 
 		if (result.hasErrors() || add_result.hasErrors()) {
-			System.out.println("result.hasErrors() :" + result.hasErrors());
-			System.out.println("result :" + result);
-			System.out.println("add_result.hasErrors() :" + add_result.hasErrors());
-			System.out.println("add_result :" + add_result);
 			m.addAttribute("error", result);
 			m.addAttribute("addError", add_result);
 			m.addAttribute("userModel", userModel);
 			return "registration";
 		}
-
-		m.addAttribute("userModel", userModel);
-
 		userService.addUser(userModel);
 		return "index";
 	}
@@ -92,13 +79,11 @@ public class UserController {
 			return mav;
 		} else {
 			userModel = userService.showData(userModel.getEmail(), userModel.getPwd());
-			// User user = userService.validateUser(login);
 			if (null != userModel) {
 				mav = new ModelAndView("profile");
 				mav.addObject("userModel", userModel);
 				session.setAttribute("loginUser", "user");
 				session.setAttribute("login", userModel);
-				// mav.addObject("firstname", userModel.getFname());
 			} else {
 				mav = new ModelAndView("login");
 				mav.addObject("message", "Invalid Details ! try with another");
@@ -134,7 +119,7 @@ public class UserController {
 
 	@PostMapping("/update")
 	public String updateForm(@Valid UserModel userModel, BindingResult result,
-			@RequestParam("pic") CommonsMultipartFile file, Model m, @Valid AddressListDto addressListDto,
+			@RequestParam("image") CommonsMultipartFile image, Model m, @Valid AddressListDto addressListDto,
 			BindingResult add_result, HttpSession session, int id, String base64image) {
 
 		userModel.setAddressModel(addressListDto.getAddressmodel());
@@ -146,8 +131,8 @@ public class UserController {
 			return "registration";
 		}
 
-		if (file.getSize() > 0) {
-			userModel.setPic(file.getBytes());
+		if (image.getSize() > 0) {
+			userModel.setPic(image.getBytes());
 		} else {
 			byte[] decodedBytes = Base64.getDecoder().decode(base64image);
 			userModel.setPic(decodedBytes);

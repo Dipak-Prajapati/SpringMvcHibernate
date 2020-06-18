@@ -282,7 +282,7 @@
 							<div class="form-group">
 								<label for="img">Upload Profile : </label><br>
 								<div class="d-flex">
-									<input type="file" class="form-control-file" name="pic"
+									<input type="file" class="form-control-file" name="image"
 										id="pic" accept="image/*" value=""  
 										onchange="inputFile() ; readURL(this)" onfocus="resetFile()">
 									<input type="hidden" name="base64image" value="${(userModel.base64image)!""}"/>
