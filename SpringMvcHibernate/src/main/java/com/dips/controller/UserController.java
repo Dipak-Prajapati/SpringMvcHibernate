@@ -1,8 +1,10 @@
 package com.dips.controller;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +27,7 @@ import com.dips.model.UserModel;
 import com.dips.service.UserService;
 
 @Controller
+//@MultipartConfig
 public class UserController {
 
 	@Autowired
@@ -44,37 +48,35 @@ public class UserController {
 		return "login";
 	}
 
+	// @RequestMapping(value = { "/save" }, method = RequestMethod.POST, consumes =
+	// {"multipart/form-data"})
 	@PostMapping("/save")
 	public String registrationForm(@Valid UserModel userModel, BindingResult result,
-			@RequestParam("pic") CommonsMultipartFile file, Model m,@Valid AddressListDto addressListDto , BindingResult add_result) {
+			@Valid AddressListDto addressListDto, BindingResult add_result,
+			@RequestParam("pic") CommonsMultipartFile pic, Model m) {
 
+		System.out.println("file :" + pic + "file size" + pic.getSize());
 		userModel.setAddressModel(addressListDto.getAddressmodel());
-		
-		if(result.hasErrors() || add_result.hasErrors())
-		{
-			m.addAttribute("error",result);
-			m.addAttribute("addError",add_result);
+
+		System.out.println("pic.getBytes()" + pic.getBytes());
+		userModel.setPic(pic.getBytes());
+
+		if (result.hasErrors() || add_result.hasErrors()) {
+			System.out.println("result.hasErrors() :" + result.hasErrors());
+			System.out.println("result :" + result);
+			System.out.println("add_result.hasErrors() :" + add_result.hasErrors());
+			System.out.println("add_result :" + add_result);
+			m.addAttribute("error", result);
+			m.addAttribute("addError", add_result);
 			m.addAttribute("userModel", userModel);
 			return "registration";
 		}
 
-		/* m.addAttribute("userModel", userModel); */
-		userModel.setPic(file.getBytes());
+		m.addAttribute("userModel", userModel);
+
 		userService.addUser(userModel);
 		return "index";
 	}
-
-	/*
-	 * @PostMapping("/logincheck") public ModelAndView showUser(Model m , UserModel
-	 * userModel,HttpSession session) { ModelAndView mav = null; userModel =
-	 * userService.showData(userModel.getEmail(),userModel.getPwd()); //User user =
-	 * userService.validateUser(login); if (null != userModel) { mav = new
-	 * ModelAndView("profile"); mav.addObject("userModel", userModel);
-	 * session.setAttribute("loginUser", "user"); session.setAttribute("login",
-	 * userModel); //mav.addObject("firstname", userModel.getFname()); } else { mav
-	 * = new ModelAndView("login"); mav.addObject("message",
-	 * "Invalid Details ! try with another"); } return mav; }
-	 */
 
 	@PostMapping("/logincheck")
 	public ModelAndView showUser(Model m, UserModel userModel, HttpSession session) {
@@ -131,19 +133,19 @@ public class UserController {
 	}
 
 	@PostMapping("/update")
-	public String updateForm(@Valid UserModel userModel, BindingResult result, @RequestParam("pic") CommonsMultipartFile file,
-			Model m,@Valid AddressListDto addressListDto,BindingResult add_result ,HttpSession session, int id, String base64image) {
-		
+	public String updateForm(@Valid UserModel userModel, BindingResult result,
+			@RequestParam("pic") CommonsMultipartFile file, Model m, @Valid AddressListDto addressListDto,
+			BindingResult add_result, HttpSession session, int id, String base64image) {
+
 		userModel.setAddressModel(addressListDto.getAddressmodel());
 
-		if(result.hasErrors() || add_result.hasErrors())
-		{
-			m.addAttribute("error",result);
-			m.addAttribute("addError",add_result);
+		if (result.hasErrors() || add_result.hasErrors()) {
+			m.addAttribute("error", result);
+			m.addAttribute("addError", add_result);
 			m.addAttribute("userModel", userModel);
 			return "registration";
 		}
-		
+
 		if (file.getSize() > 0) {
 			userModel.setPic(file.getBytes());
 		} else {
@@ -158,7 +160,7 @@ public class UserController {
 			return "profile";
 		} else {
 			List<UserModel> list = userService.getAllUserData();
-			m.addAttribute("userModel",list);
+			m.addAttribute("userModel", list);
 			return "adminProfile";
 		}
 	}
@@ -170,14 +172,14 @@ public class UserController {
 		m.addAttribute("logoutmessage", "Logout SuccessFully");
 		return "login";
 	}
-	
-	@RequestMapping(value="/DeleteUser{userId}",method = RequestMethod.DELETE)   
+
+	@RequestMapping(value = "/DeleteUser{userId}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public String deleteUser(@PathVariable("userId")Integer userId) {
+	public String deleteUser(@PathVariable("userId") Integer userId) {
 		userService.deleteUser(userId);
-		return null;   
+		return null;
 	}
-	
+
 	@RequestMapping("/forgotPassword")
 	public String displayForgotPasswordPage() {
 		return "forgotPassword";
@@ -197,15 +199,15 @@ public class UserController {
 			return message;
 		}
 	}
-	
-	@RequestMapping(value="/emailexist",method = RequestMethod.POST)   
+
+	@RequestMapping(value = "/emailexist", method = RequestMethod.POST)
 	@ResponseBody
-	public String emailExist(@RequestParam("userId")int userId,@RequestParam("email")String email) {
-		boolean isEmailExist = userService.emailExist(userId,email);
-		if(isEmailExist == true) {
+	public String emailExist(@RequestParam("userId") int userId, @RequestParam("email") String email) {
+		boolean isEmailExist = userService.emailExist(userId, email);
+		if (isEmailExist == true) {
 			return "*This Email Id Already Exist Please fill another one*";
-		}else {
+		} else {
 			return null;
-		}  
+		}
 	}
 }

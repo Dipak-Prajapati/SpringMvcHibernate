@@ -70,6 +70,7 @@ public class UserModel {
 	private String pwd;
 	
 	@Lob
+	//@Column(nullable = true)
 	private byte[] pic;
 	
 	@Transient

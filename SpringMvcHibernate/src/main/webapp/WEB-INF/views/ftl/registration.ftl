@@ -19,7 +19,7 @@
 					</div>
 					<div class="card-body">
 					
-						<form name="reg" id="reg" method="post" action="<#if session?has_content>update<#else>save</#if>" enctype="multipart/form-data" onsubmit="return validate()">
+						<form name="reg" id="reg" method="post" action="<#if session?has_content>update<#else>save</#if>" onsubmit="return validate()" enctype="multipart/form-data">
 							
 							<span class="error" id="shead"></span>
 
@@ -286,11 +286,12 @@
 										id="pic" accept="image/*" value=""  
 										onchange="inputFile() ; readURL(this)" onfocus="resetFile()">
 									<input type="hidden" name="base64image" value="${(userModel.base64image)!""}"/>
-									<input type="hidden" value="" id="userImage" name="userImage">
-									<img id="preview" <#if userModel?has_content>src="data:image/jpg;base64,${userModel.base64image}"</#if> class="rounded float-right"
+									
+									<img id="preview" <#if userModel?has_content>src="data:image/jpg;base64,${(userModel.base64image)!""}"</#if> class="rounded float-right"
 										<br>
 								</div>
 								<span class="error" id="spic"></span>
+								<span class="error"><#if (error.getFieldError("pic"))??> ${(error.getFieldError("pic").defaultMessage)} </#if></span>
 							</div>
 							
 							<#if userModel?has_content>
